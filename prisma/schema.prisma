@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Plan {
+  FREE
+  PRO
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  plan         Plan     @default(FREE)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  qrCodes      QrCode[]
+}
+
+/// A link turned into a styled QR code.
+model QrCode {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  destination String
+  /// Dynamic codes encode /r/{code} and redirect, so the destination can change after printing.
+  dynamic     Boolean  @default(false)
+  /// Short code used in /r/{code}.
+  code        String   @unique
+  /// QrStyle (see src/lib/qr-style.ts).
+  style       Json
+  scans       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  scanEvents  QrScan[]
+
+  @@index([userId, updatedAt(sort: Desc)])
+}
+
+model QrScan {
+  id        String   @id @default(cuid())
+  qrCodeId  String
+  qrCode    QrCode   @relation(fields: [qrCodeId], references: [id], onDelete: Cascade)
+  /// ios | android | desktop | other
+  device    String   @default("other")
+  country   String?
+  city      String?
+  createdAt DateTime @default(now())
+
+  @@index([qrCodeId, createdAt(sort: Desc)])
+}
