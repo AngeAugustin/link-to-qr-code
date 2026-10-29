@@ -36,7 +36,11 @@ export function AuthForm({ mode, next }: { mode: "login" | "register"; next?: st
       const data = await res.json();
       if (!res.ok) {
         setError(
-          data.code === "invalid" && register ? t("auth.invalidRegister") : (data.error ?? t("common.serverError")),
+          data.code === "invalid" && register
+            ? t("auth.invalidRegister")
+            : data.code === "accountDisabled"
+              ? t("auth.accountDisabled")
+              : (data.error ?? t("common.serverError")),
         );
         return;
       }

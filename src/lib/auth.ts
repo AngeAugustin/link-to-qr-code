@@ -8,6 +8,7 @@ export type SessionUser = {
   email: string;
   name: string;
   plan: "FREE" | "PRO";
+  role: "USER" | "ADMIN";
 };
 
 export function hashPassword(password: string) {
@@ -38,8 +39,10 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const store = await cookies();
   const userId = await verifySessionToken(store.get(SESSION_COOKIE)?.value);
   if (!userId) return null;
-  return prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, email: true, name: true, plan: true },
+    select: { id: true, email: true, name: true, plan: true, role: true, disabledAt: true },
   });
+  if (!user || user.disabledAt) return null;
+  return { id: user.id, email: user.email, name: user.name, plan: user.plan, role: user.role };
 }

@@ -87,6 +87,11 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
                     <LocaleLink href="/mes-qr" className="block rounded-lg px-2 py-2 text-body-md hover:bg-surface-container-low">
                       {t("nav.myQrCodes")}
                     </LocaleLink>
+                    {user.role === "ADMIN" ? (
+                      <LocaleLink href="/admin" className="block rounded-lg px-2 py-2 text-body-md text-primary hover:bg-surface-container-low">
+                        {t("nav.admin")}
+                      </LocaleLink>
+                    ) : null}
                     <LocaleLink
                       href="/modeles"
                       className="block rounded-lg px-2 py-2 text-body-md hover:bg-surface-container-low md:hidden"

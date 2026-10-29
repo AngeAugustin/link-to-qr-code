@@ -16,6 +16,7 @@ export async function POST(request: Request) {
     if (!user || !(await verifyPassword(data.password, user.passwordHash))) {
       return jsonError("badCredentials", 401);
     }
+    if (user.disabledAt) return jsonError("accountDisabled", 403);
     await startSession(user.id);
     return NextResponse.json({ ok: true });
   } catch (error) {

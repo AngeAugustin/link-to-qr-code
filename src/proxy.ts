@@ -37,7 +37,7 @@ export async function proxy(request: NextRequest) {
   res.cookies.set(LOCALE_COOKIE, locale, { path: "/", sameSite: "lax", maxAge: 60 * 60 * 24 * 365 });
 
   const bare = stripLocalePath(pathname);
-  if (!bare.startsWith("/mes-qr")) return res;
+  if (!bare.startsWith("/mes-qr") && !bare.startsWith("/admin")) return res;
 
   const userId = await verifySessionToken(request.cookies.get(SESSION_COOKIE)?.value);
   if (userId) return res;

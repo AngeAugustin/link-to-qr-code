@@ -8,6 +8,7 @@ export const API_ERRORS = {
   badCredentials: "E-mail ou mot de passe incorrect.",
   emailTaken: "Un compte existe déjà avec cet e-mail.",
   dynamicLimit: "Le plan Gratuit inclut 3 QR dynamiques. Supprimez-en un ou passez en Pro.",
+  accountDisabled: "Ce compte est désactivé.",
 } as const;
 
 export function jsonError(key: keyof typeof API_ERRORS, status: number) {
