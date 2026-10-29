@@ -4,7 +4,7 @@ import { useId, useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
-import { useT } from "@/lib/copy";
+import { useT } from "@/components/i18n/LocaleProvider";
 import { cn } from "@/lib/cn";
 import {
   DEFAULT_STYLE,
@@ -329,11 +329,11 @@ export function QrStudio({ value, onChange, mode, canDynamic, shortUrl, onSave, 
   return (
     <div className="grid gap-space-md lg:grid-cols-[340px_minmax(0,1fr)] 2xl:grid-cols-[360px_minmax(0,1fr)_300px] items-start">
       {/* Controls */}
-      <section className="order-2 lg:order-1 rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/20 overflow-hidden grid grid-cols-1 sm:grid-cols-[76px_minmax(0,1fr)] lg:min-h-[620px]">
+      <section className="order-2 lg:order-1 rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/20 overflow-hidden grid grid-cols-1 min-w-0 sm:grid-cols-[76px_minmax(0,1fr)] lg:min-h-[620px]">
         <div
           role="tablist"
           aria-label={t("app.qrStudio.content.title")}
-          className="flex sm:flex-col gap-1 overflow-x-auto no-scrollbar bg-surface-container-low border-b sm:border-b-0 sm:border-r border-outline-variant/30 p-1.5"
+          className="flex snap-x snap-mandatory gap-1 overflow-x-auto no-scrollbar bg-surface-container-low border-b p-1.5 sm:flex-col sm:snap-none sm:overflow-x-visible sm:border-b-0 sm:border-r border-outline-variant/30"
         >
           {TABS.map((item) => (
             <button
@@ -343,7 +343,7 @@ export function QrStudio({ value, onChange, mode, canDynamic, shortUrl, onSave, 
               aria-selected={tab === item.id}
               onClick={() => setTab(item.id)}
               className={cn(
-                "flex flex-1 sm:flex-none flex-col items-center gap-1 rounded-lg px-1 py-2 text-[11px] transition-all min-w-14",
+                "flex min-w-[4.25rem] flex-1 shrink-0 snap-start flex-col items-center gap-1 rounded-lg px-1 py-2 text-[10px] transition-all sm:min-w-14 sm:flex-none sm:snap-none sm:text-[11px]",
                 tab === item.id
                   ? "bg-surface-container-lowest text-primary-container font-bold shadow-sm"
                   : "text-on-surface-variant hover:text-on-surface",
@@ -693,7 +693,7 @@ export function QrStudio({ value, onChange, mode, canDynamic, shortUrl, onSave, 
       <section className="order-1 lg:order-2 flex flex-col gap-space-md min-w-0">
         <div className="rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/20 overflow-hidden">
           <div
-            className="grid place-items-center p-space-lg sm:p-space-xl min-h-[360px] lg:min-h-[520px]"
+            className="grid place-items-center p-4 min-h-[280px] sm:p-space-lg sm:min-h-[360px] md:min-h-[420px] lg:min-h-[520px] lg:p-space-xl"
             style={{
               backgroundImage: "radial-gradient(var(--color-outline-variant) 1px, transparent 1px)",
               backgroundSize: "18px 18px",
@@ -739,7 +739,7 @@ export function QrStudio({ value, onChange, mode, canDynamic, shortUrl, onSave, 
       </section>
 
       {/* Side: readability, templates, export */}
-      <aside className="order-3 lg:col-span-2 2xl:col-span-1 grid gap-space-md sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-1 items-start">
+      <aside className="order-3 lg:col-span-2 2xl:col-span-1 grid min-w-0 gap-space-md sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-1 items-start">
         <div className="rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/20 p-space-lg flex flex-col gap-space-md">
           <h2 className="text-label-md text-on-surface">{t("app.qrStudio.scan.title")}</h2>
           <div className="flex items-center gap-space-md">

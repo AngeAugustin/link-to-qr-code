@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { useT } from "@/lib/copy";
+import { useT } from "@/components/i18n/LocaleProvider";
 import { cn } from "@/lib/cn";
 import { CATEGORY_LABELS, QR_TEMPLATES, templateStyle, type QrTemplate } from "@/lib/qr-style";
 import { QrSvg } from "./QrSvg";

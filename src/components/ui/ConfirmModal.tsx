@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
-import { useT } from "@/lib/copy";
+import { useT } from "@/components/i18n/LocaleProvider";
 
 type ConfirmModalProps = {
   open: boolean;
@@ -61,7 +61,7 @@ export function ConfirmModal({
   if (!mounted || !open) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-space-md">
+    <div className="fixed inset-0 z-[100] flex items-end justify-center p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:items-center sm:p-space-md">
       <button
         type="button"
         aria-label={t("common.close")}
@@ -75,9 +75,9 @@ export function ConfirmModal({
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={description ? descId : undefined}
-        className="relative w-full max-w-md rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-xl p-space-lg"
+        className="relative max-h-[min(90dvh,32rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-outline-variant/30 bg-surface-container-lowest p-space-lg shadow-xl sm:max-h-none"
       >
-        <div className="flex gap-space-md">
+        <div className="flex gap-space-md min-w-0">
           <span
             className={cn(
               "flex size-10 shrink-0 items-center justify-center rounded-xl",

@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { LocaleLink } from "@/components/i18n/LocaleLink";
 import { useToast } from "@/components/ui/Toast";
-import { useT } from "@/lib/copy";
+import { useT } from "@/components/i18n/LocaleProvider";
+import { useLocalePath } from "@/components/i18n/useLocalePath";
 import { normalizeStyle } from "@/lib/qr-style";
 import { encodeDraft } from "@/lib/draft";
 import { QrStudio, isValidDestination, type QrStudioValue } from "./QrStudio";
@@ -20,6 +21,7 @@ type Saved = { id: string; dynamic: boolean; shortUrl: string };
 
 export function StudioView({ signedIn, qrId, initial }: StudioViewProps) {
   const router = useRouter();
+  const lp = useLocalePath();
   const t = useT();
   const { toast } = useToast();
   const [value, setValue] = useState<QrStudioValue>(initial);
@@ -65,7 +67,7 @@ export function StudioView({ signedIn, qrId, initial }: StudioViewProps) {
       }
       toast(t("app.qrStudio.saved"));
       if (!saved) {
-        router.push(`/mes-qr/${data.qrCode.id}`);
+        router.push(`${lp("/mes-qr")}/${data.qrCode.id}`);
         return;
       }
       setSaved({ id: data.qrCode.id, dynamic: data.qrCode.dynamic, shortUrl: data.qrCode.shortUrl });
@@ -80,29 +82,29 @@ export function StudioView({ signedIn, qrId, initial }: StudioViewProps) {
   if (error) return <div className="rounded-lg bg-error-container p-space-md text-on-error-container">{error}</div>;
 
   // Visitors keep their work through sign-up: the draft (minus any uploaded image) rides in the URL.
-  const resumeUrl = `/studio?draft=${encodeDraft(value)}`;
+  const resumeUrl = `${lp("/studio")}?draft=${encodeDraft(value)}`;
 
   return (
     <div className="flex flex-col gap-space-md">
       {!signedIn ? (
-        <div className="flex flex-col gap-space-sm rounded-2xl border border-primary-fixed-dim bg-primary-fixed px-space-lg py-space-md text-on-primary-fixed sm:flex-row sm:items-center sm:justify-between">
-          <div>
+        <div className="flex flex-col gap-space-md rounded-2xl border border-primary-fixed-dim bg-primary-fixed px-space-md py-space-md text-on-primary-fixed sm:flex-row sm:items-center sm:justify-between sm:px-space-lg">
+          <div className="min-w-0">
             <p className="text-label-md">{t("app.qrStudio.publicSaveTitle")}</p>
             <p className="text-body-sm opacity-80">{t("app.qrStudio.publicSaveBody")}</p>
           </div>
-          <div className="flex shrink-0 gap-space-sm">
-            <Link
+          <div className="flex flex-col gap-2 sm:shrink-0 sm:flex-row sm:gap-space-sm">
+            <LocaleLink
               href={`/connexion?next=${encodeURIComponent(resumeUrl)}`}
-              className="inline-flex h-9 items-center rounded-lg px-3 text-label-sm hover:underline"
+              className="inline-flex h-10 w-full items-center justify-center rounded-lg px-3 text-label-sm hover:underline sm:h-9 sm:w-auto"
             >
               {t("app.qrStudio.publicLogin")}
-            </Link>
-            <Link
+            </LocaleLink>
+            <LocaleLink
               href={`/inscription?next=${encodeURIComponent(resumeUrl)}`}
-              className="inline-flex h-9 items-center rounded-lg bg-tertiary-container px-3.5 text-label-sm text-on-tertiary hover:bg-tertiary"
+              className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-tertiary-container px-3.5 text-label-sm text-on-tertiary hover:bg-tertiary sm:h-9 sm:w-auto"
             >
               {t("app.qrStudio.publicSaveCta")}
-            </Link>
+            </LocaleLink>
           </div>
         </div>
       ) : null}

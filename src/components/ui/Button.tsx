@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { LocaleLink } from "@/components/i18n/LocaleLink";
 import { cn } from "@/lib/cn";
 
 const variants = {
@@ -59,8 +60,9 @@ export function Button({
   const resolved = href;
 
   if (resolved) {
+    const LinkComp = resolved.startsWith("/") && !resolved.startsWith("//") ? LocaleLink : Link;
     return (
-      <Link
+      <LinkComp
         href={resolved}
         className={classes}
         onClick={onClick}
@@ -68,7 +70,7 @@ export function Button({
         rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)}
       >
         {children}
-      </Link>
+      </LinkComp>
     );
   }
 

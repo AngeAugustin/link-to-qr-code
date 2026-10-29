@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { useToast } from "@/components/ui/Toast";
-import { useT } from "@/lib/copy";
+import { useLocale, useT } from "@/components/i18n/LocaleProvider";
+import { useLocalePath } from "@/components/i18n/useLocalePath";
 import { cn } from "@/lib/cn";
 import type { QrStyle } from "@/lib/qr-style";
 import { QrSvg } from "./QrSvg";
@@ -128,9 +129,11 @@ function ShareList({ title, items, labelOf }: { title: string; items: Share[]; l
 
 export function QrCodesView() {
   const router = useRouter();
+  const lp = useLocalePath();
+  const locale = useLocale();
   const t = useT();
   const { toast } = useToast();
-  const numLocale = "fr-FR";
+  const numLocale = locale === "en" ? "en-US" : "fr-FR";
   const nf = useMemo(() => new Intl.NumberFormat(numLocale), [numLocale]);
 
   const [rows, setRows] = useState<QrRow[]>([]);
@@ -150,7 +153,7 @@ export function QrCodesView() {
       try {
         const res = await fetch("/api/qr-codes");
         if (res.status === 401) {
-          router.push("/connexion?next=/mes-qr");
+          router.push(`${lp("/connexion")}?next=${encodeURIComponent(lp("/mes-qr"))}`);
           return;
         }
         const data = await res.json();
@@ -247,12 +250,12 @@ export function QrCodesView() {
 
   return (
     <div className="flex flex-col gap-space-lg w-full">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
-        <div>
+      <div className="flex flex-col gap-space-md sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h1 className="text-headline-lg font-bold text-on-surface">{t("app.qrCodes.title")}</h1>
-          <p className="text-body-md text-on-surface-variant mt-1">{t("app.qrCodes.subtitle")}</p>
+          <p className="mt-1 text-body-md text-on-surface-variant">{t("app.qrCodes.subtitle")}</p>
         </div>
-        <Button href="/studio">
+        <Button href="/studio" className="w-full sm:w-auto">
           <Icon name="add" /> {t("app.qrCodes.create")}
         </Button>
       </div>
@@ -297,7 +300,7 @@ export function QrCodesView() {
             </div>
           </div>
 
-          <div className="grid gap-space-md xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-start">
+          <div className="grid min-w-0 gap-space-md lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-start">
             <div role="listbox" aria-label={t("app.qrCodes.title")} className="rounded-2xl bg-surface-container-lowest shadow-sm overflow-hidden">
               <div className="hidden sm:grid grid-cols-[52px_minmax(0,1fr)_100px_130px] gap-space-md px-space-md py-space-sm border-b border-outline-variant/30 text-label-sm text-on-surface-variant">
                 <span />
@@ -321,7 +324,12 @@ export function QrCodesView() {
                     <QrSvg text={r.encodedText} style={{ ...r.style, margin: 1, frame: "none" }} />
                   </span>
                   <span className="min-w-0">
-                    <span className="block truncate text-label-md text-on-surface">{r.name}</span>
+                    <span className="flex items-center gap-2">
+                      <span className="truncate text-label-md text-on-surface">{r.name}</span>
+                      <Badge tone={r.dynamic ? "primary" : "neutral"} className="shrink-0 sm:hidden">
+                        {r.dynamic ? t("app.qrCodes.dynamic") : t("app.qrCodes.static")}
+                      </Badge>
+                    </span>
                     <span className="block truncate font-mono text-[12px] text-on-surface-variant">{r.destination}</span>
                   </span>
                   <span className="hidden sm:block">
@@ -371,7 +379,7 @@ export function QrCodesView() {
                   <label htmlFor="qr-destination" className="text-label-sm text-on-surface-variant">
                     {t("app.qrCodes.destination")}
                   </label>
-                  <div className="flex gap-space-sm">
+                  <div className="flex flex-col gap-space-sm sm:flex-row">
                     <input
                       id="qr-destination"
                       value={destDraft}
@@ -382,7 +390,7 @@ export function QrCodesView() {
                     {selected.dynamic ? (
                       <Button
                         variant="brand"
-                        className="shrink-0 whitespace-nowrap"
+                        className="w-full shrink-0 whitespace-nowrap sm:w-auto"
                         onClick={() => void updateDestination()}
                         disabled={updating || destDraft.trim() === selected.destination || !isValidDestination(destDraft.trim())}
                       >

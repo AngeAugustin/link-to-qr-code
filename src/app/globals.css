@@ -157,6 +157,8 @@
     color: var(--color-on-surface);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+    min-height: 100dvh;
   }
 
   :where(h1, h2, h3),
